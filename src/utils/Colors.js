@@ -1,0 +1,7 @@
+export const primary = "#1A0AF7"
+export const primaryBG = "#EDECFE"
+export const secondary = "#FEEFEF"
+export const black = "#181818"
+export const gray = "#828282"
+export const light = "#f2f2f2"
+export const white = "#fff"
