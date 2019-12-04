@@ -1,5 +1,8 @@
 import React from "react"
+import { useInView } from 'react-intersection-observer'
 import styled from "@emotion/styled"
+import { keyframes } from '@emotion/core'
+
 
 import { useStaticQuery, graphql } from "gatsby"
 import Img from "gatsby-image"
@@ -11,6 +14,10 @@ import SEO from "../components/seo"
 import { primaryBG, primary, secondary, black, gray, mq } from "../utils"
 
 const About = () => {
+  const [ref, inView, entry] = useInView({
+    threshold: 1,
+    triggerOnce: true
+  })
   const data = useStaticQuery(graphql`
     query AboutQuery {
       allContentfulAbout {
@@ -51,6 +58,9 @@ const About = () => {
     }
   `)
 
+  console.log(inView);
+  console.log(entry);
+
   return (
     <Layout>
       <SEO title="About me" />
@@ -69,12 +79,12 @@ const About = () => {
             </div>
           ))}
         </Content>
-        <SkillsWrapper>
+        <SkillsWrapper ref={ref}>
           {data.allContentfulSkills.edges.map(({ node }) => (
             <div key={node.id}>
               <p>{node.title}</p>
               <p>{node.value}% </p>
-              <Progress value={node.value} />
+              <Progress value={inView && node.value} />
             </div>
           ))}
         </SkillsWrapper>
@@ -101,8 +111,8 @@ const About = () => {
                   </p>
                 ))
               ) : (
-                <p className="desc">{node.desc} </p>
-              )}
+                  <p className="desc">{node.desc} </p>
+                )}
             </div>
           ))}
         </PersonalWrapper>
@@ -164,11 +174,21 @@ const SkillsWrapper = styled.article`
       font-size: 1.25em;
     }
   }
+
   ${mq[1]} {
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 2rem 3rem;
   }
 `
+const slideProgress = (y) => keyframes`
+    0% {
+        width: 0;
+    }
+    100% {
+        width : ${y}%
+    }
+`;
+
 const Progress = styled.span`
   position: absolute;
   height: 4px;
@@ -179,20 +199,9 @@ const Progress = styled.span`
     content: "";
     position: absolute;
     height: 100%;
+    width: 0;
     background: ${primary};
-    animation-delay: 500ms;
-    animation-duration: 500ms;
-    animation-name: slidein;
-    animation-direction: normal;
-    animation-fill-mode: both;
-  }
-  @keyframes slidein {
-    from {
-      width: 0;
-    }
-    to {
-      width: ${({ value }) => value}%;
-    }
+    animation: ${({ value }) => slideProgress(value)} 500ms 100ms normal both;
   }
 `
 
