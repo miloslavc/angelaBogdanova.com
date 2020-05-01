@@ -24,7 +24,7 @@
     "react-intersection-observer": "^8.26.2"
   },
   "devDependencies": {
-    "prettier": "^2.0.4"
+    "prettier": "^2.0.5"
   },
   "keywords": [
     "gatsby"
